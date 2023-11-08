@@ -1,4 +1,3 @@
-# Modbus Communicator
-URCap sample that illustrates how to monitor signals from a Modbus TCP/IP server without creating a unit inside the Installation tab. This is useful as the current URCap API cannot create and access the units directly.
+# Variable Logging
+URCap sample that illustrates how to log a variable and its value in a running program. These values can then be written out to a CSV file that's stored in the "programs" folder in Polyscope.
 
-<img height="400" src="media/modbusCommunicator.png">
