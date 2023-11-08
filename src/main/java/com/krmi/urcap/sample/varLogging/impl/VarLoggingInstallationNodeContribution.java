@@ -24,12 +24,6 @@ public class VarLoggingInstallationNodeContribution implements InstallationNodeC
 	private XmlRpcVarLoggingDaemonInterface xmlRpcDaemonInterface;
     private boolean pauseTimer = false;
 
-    private static final String FUNCTIONNAME_SENDVAR = "send_var";
-    private static final String FUNCTIONNAME_CLEARVARS = "clear_vars";
-    private static final String FUNCTIONNAME_WRITETOCSV = "write_to_csv";
-    private static final String VARNAME = "var_name";
-	private static final String VARVAL = "var_val";
-
     public VarLoggingInstallationNodeContribution(InstallationAPIProvider apiProvider, VarLoggingInstallationNodeView view, 
     DataModel model, VarLoggingDaemonService daemonService, CreationContext context) {
         this.api = apiProvider.getInstallationAPI();
@@ -39,10 +33,6 @@ public class VarLoggingInstallationNodeContribution implements InstallationNodeC
 
         xmlRpcDaemonInterface = new XmlRpcVarLoggingDaemonInterface("127.0.0.1", PORT);
         startDaemon();
-
-        addFunction(FUNCTIONNAME_CLEARVARS);
-        addFunction(FUNCTIONNAME_SENDVAR, VARNAME, VARVAL);
-        addFunction(FUNCTIONNAME_WRITETOCSV);
 
         
     }
@@ -61,23 +51,6 @@ public class VarLoggingInstallationNodeContribution implements InstallationNodeC
     public void generateScript(ScriptWriter writer) {
         writer.assign(XMLRPC_VARIABLE, "rpc_factory(\"xmlrpc\", \"http://127.0.0.1:" + PORT + "/RPC2\")");
         
-        // URScript code to call the function "send_var" with the arguments "var_name" and "var_val"
-        writer.appendLine("def " + FUNCTIONNAME_SENDVAR + "(" + VARNAME + ", " + VARVAL + "):");
-        writer.appendLine("local return_value = " + XMLRPC_VARIABLE + ".send_var(" + VARNAME + ", " + VARVAL + ")");
-        writer.appendLine("return return_value");
-        writer.appendLine("end");
-
-        // URScript code to call the function "clear_vars"
-        writer.appendLine("def " + FUNCTIONNAME_CLEARVARS + "():");
-        writer.appendLine("local return_value = " + XMLRPC_VARIABLE + ".clear_vars()");
-        writer.appendLine("return return_value");
-        writer.appendLine("end");
-
-        // URScript code to call the function "write_to_csv"
-        writer.appendLine("def " + FUNCTIONNAME_WRITETOCSV + "():");
-        writer.appendLine("local return_value = " + XMLRPC_VARIABLE + ".write_to_csv()");
-        writer.appendLine("return return_value");
-        writer.appendLine("end");
     }
 
     private void startDaemon() {
@@ -107,15 +80,5 @@ public class VarLoggingInstallationNodeContribution implements InstallationNodeC
 		}
 	}
 
-    private void addFunction(String name, String... argumentNames) {
-		FunctionModel functionModel = api.getFunctionModel();
-		if(functionModel.getFunction(name) == null) {
-			try {
-				functionModel.addFunction(name, argumentNames);
-			} catch (FunctionException e) {
-				// See e.getMessage() for explanation
-			}
-		}
-	}
 }
 
